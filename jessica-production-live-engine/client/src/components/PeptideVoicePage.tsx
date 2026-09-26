@@ -333,11 +333,11 @@ export function PeptideVoicePage() {
               PEPTIDE SPECIALIST
             </h1>
             <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-mono text-[9px] sm:text-[10px] font-semibold border border-emerald-500/30 uppercase tracking-wider">
-              Research & Sales Concierge
+              Golden Era Veteran Concierge
             </span>
           </div>
           <p className="text-xs sm:text-sm text-zinc-300 font-medium">
-            Built for the bodybuilding & performance community.
+            Experienced. Disciplined. Grounded in decades of physique development & modern research.
           </p>
           <p className="text-xs sm:text-sm font-semibold text-emerald-400">
             "What are you researching today?"
