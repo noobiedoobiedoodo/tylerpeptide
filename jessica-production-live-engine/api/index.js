@@ -5800,17 +5800,17 @@ var PeptideKnowledgeEngine = class _PeptideKnowledgeEngine {
     if (isBodybuilderIntro && (lower.includes("recovery") || lower.includes("peptides"))) {
       const bpc = this.peptides.get("bpc-157");
       return {
-        answer: "Understood. For competitive bodybuilders and physique athletes, recovery research primarily focuses on BPC-157 and TB-500 for soft tissue, tendon, and ligament repair, alongside growth hormone secretagogues like Ipamorelin and CJC-1295 for systemic recovery and sleep quality. It is critical to separate what has actual human clinical evidence from what is strictly preclinical or circulating as an unverified bodybuilding community claim. BPC-157 and TB-500 have demonstrated tissue healing and angiogenesis in animal and cellular studies, but they lack completed human clinical trials. What specific compound or recovery target are you looking into?",
+        answer: "Understood. For competitive bodybuilders and physique athletes, recovery is huge. The compounds you'll hear lifters talking about most often are BPC-157 and TB-500 for soft tissue, tendon flare-ups, and nagging joints, along with secretagogues like Ipamorelin and CJC-1295 for sleep and systemic recovery.\n\nA lot of that interest comes from individual athlete reports rather than human clinical evidence, so we treat them as unverified bodybuilding community claims until you look at the research.\n\nWhat specific compound or recovery target are you looking into? If you want, we can also dive into the preclinical or human research.",
         peptide: bpc,
         evidenceClassification: {
           claimTopic: "Competitive Bodybuilding Recovery Research",
-          evidenceLevel: "LEVEL_C",
-          recommendedLanguage: "This has been investigated in preclinical research, but human clinical efficacy is unproven.",
-          evidenceSummary: "Preclinical animal studies investigate soft tissue and tendon healing (BPC-157, TB-500), but human clinical evidence remains unproven.",
-          caveats: ["Preclinical evidence does not establish clinical human efficacy in athletes."],
+          evidenceLevel: "LEVEL_D",
+          recommendedLanguage: "For physique athletes, BPC-157, TB-500, Ipamorelin, and CJC-1295 are frequently discussed.",
+          evidenceSummary: "Bodybuilders research soft tissue repair (BPC-157, TB-500) and GH secretagogues (Ipamorelin, CJC-1295) based on community experiences.",
+          caveats: ["Community reports do not equal clinical proof."],
           matchingSources: bpc ? bpc.sources : [],
           isAnecdotal: true,
-          isPreclinical: true,
+          isPreclinical: false,
           isClinicallySupported: false,
           isUnknown: false
         },
@@ -5845,17 +5845,17 @@ var PeptideKnowledgeEngine = class _PeptideKnowledgeEngine {
     if (isRecoveryQuery && (!peptide || peptide.id === "bpc-157" || peptide.id === "tb-500")) {
       const bpc = this.peptides.get("bpc-157");
       return {
-        answer: "In bodybuilding and athletic communities, the primary peptides researched for recovery are BPC-157 and TB-500 for localized soft tissue and tendon repair, along with GH secretagogues like CJC-1295 and Ipamorelin for systemic recovery and deep sleep. Preclinical research in animal models indicates BPC-157 promotes angiogenesis and collagen organization in damaged tendons, but there are no completed human clinical trials proving these benefits in athletes. In contrast, secretagogues have human pharmacokinetic data for elevating GH pulses, but recovery claims remain largely supported by community anecdotes.",
+        answer: "In the bodybuilding and athletic scene, recovery is one of the biggest topics. The main compounds you'll hear lifters discussing are BPC-157 and TB-500 for localized soft tissue, tendons, and joints, along with growth hormone secretagogues like CJC-1295 and Ipamorelin for systemic recovery and deep sleep.\n\nMost of the interest comes from individual reports and athlete experiences, though clinical proof in human trials is not established.\n\nIf you want, I can tell you what bodybuilders are saying about any of these in more detail, or we can look at the preclinical research or human clinical trials.",
         peptide: bpc,
         evidenceClassification: {
           claimTopic: "Peptides for Training Recovery",
-          evidenceLevel: "LEVEL_C",
-          recommendedLanguage: "This has been investigated in preclinical research, but that does not establish human clinical proof.",
-          evidenceSummary: "BPC-157 and TB-500 have preclinical animal evidence for tissue repair; human clinical evidence is not established.",
-          caveats: ["Preclinical animal findings do not translate directly to human athletic recovery."],
+          evidenceLevel: "LEVEL_D",
+          recommendedLanguage: "In the bodybuilding scene, lifters discuss BPC-157, TB-500, CJC-1295, and Ipamorelin for recovery.",
+          evidenceSummary: "Recovery compounds are widely discussed in bodybuilding communities based on user experiences.",
+          caveats: ["Individual reports are not proof of efficacy."],
           matchingSources: bpc ? bpc.sources : [],
           isAnecdotal: true,
-          isPreclinical: true,
+          isPreclinical: false,
           isClinicallySupported: false,
           isUnknown: false
         },
@@ -6184,10 +6184,22 @@ var PeptideKnowledgeEngine = class _PeptideKnowledgeEngine {
     }
     const isAnecdotalSpecific = lower.includes("bodybuilders reporting") || lower.includes("bodybuilders say") || lower.includes("what are people reporting") || lower.includes("what are bodybuilders") || lower.includes("gym reports") || lower.includes("community reports") || lower.includes("anecdotal") && !lower.includes("rather than");
     if (isAnecdotalSpecific) {
-      const anecdotalText = `ANECDOTAL REPORTS:
-These are individual reports, not clinical evidence and not proof of efficacy. Some users report ${peptide.anecdotalSummary}
+      let anecdotalBody = "";
+      if (peptide.id === "bpc-157") {
+        anecdotalBody = `In the bodybuilding and physique community, you'll mainly hear people talk about it around recovery, tendons, soft tissue and getting back to training. Some users report noticing improvements in how they feel during recovery, while others report little or no noticeable effect.
 
-If you want, I can also break down what the preclinical research or human clinical studies show. Where do you want to start?`;
+These are individual reports, not clinical evidence and not proof of efficacy.
+
+If you want, I can also show you what the preclinical research says about those claims.`;
+      } else {
+        anecdotalBody = `In the bodybuilding and physique community, you'll hear lifters talk about it mainly around ${peptide.anecdotalSummary} Some users report noticeable effects, while others report little to none.
+
+These are individual reports, not clinical evidence and not proof of efficacy.
+
+If you want, I can also show you what the preclinical research says about those claims.`;
+      }
+      const prefix = lower.includes("reporting") || lower.includes("anecdotal") ? "ANECDOTAL REPORTS:\n" : "";
+      const anecdotalText = `${prefix}${anecdotalBody}`;
       return {
         answer: anecdotalText,
         peptide,
@@ -6242,9 +6254,11 @@ If you'd like, I can break down what has actually been researched or what bodybu
         };
       }
     }
-    const isPreclinicalQuery = lower.includes("preclinical") || lower.includes("animal") || lower.includes("in vitro") || lower.includes("in-vitro") || lower.includes("what does research show") || lower.includes("what does the research say") && !lower.includes("actually say") || lower.includes("rodent") || lower.includes("tendon explant");
+    const isPreclinicalQuery = lower.includes("preclinical") || lower.includes("animal") || lower.includes("in vitro") || lower.includes("in-vitro") || lower.includes("what does research show") || lower.includes("what does the research say") && !lower.includes("actually say") || lower.includes("rodent") || lower.includes("tendon explant") || lower === "yes" || lower === "yes." || lower === "yeah" || lower === "yeah." || lower === "sure";
     if (isPreclinicalQuery) {
-      const preclinicalText = `PRECLINICAL RESEARCH:
+      const isAffirmative = lower === "yes" || lower === "yes." || lower === "yeah" || lower === "yeah." || lower === "sure" || lower.includes("what does the research say");
+      const intro = isAffirmative ? "Sure. Let's get into the research. " : "";
+      const preclinicalText = `${intro}PRECLINICAL RESEARCH:
 This has been investigated in preclinical research, but that does not establish the same effect in humans. In animal and cell studies, ${peptide.preclinicalEvidenceSummary}
 
 If you want, I can tell you what human clinical trials exist, or what bodybuilders are reporting in the gym. Where do you want to head next?`;
@@ -6270,7 +6284,7 @@ If you want, I can tell you what human clinical trials exist, or what bodybuilde
         sessionContext: session
       };
     }
-    const isRegulatoryQuery = lower.includes("fda") || lower.includes("approved") || lower.includes("regulatory") || lower.includes("legality") || lower.includes("legal status") || lower.includes("wada");
+    const isRegulatoryQuery = lower.includes("fda") || lower.includes("approved") || lower.includes("regulatory") || lower.includes("legality") || lower.includes("legal status") || lower.includes("wada") || lower.includes("what does the fda say");
     if (isRegulatoryQuery) {
       const regRecord = peptide.structuredEvidence?.find((r) => r.evidence_type === "REGULATORY");
       const regStatus = peptide.regulatoryStatus || "Research chemical / Not approved for human consumption";
@@ -6300,7 +6314,7 @@ Would you like to look into what human clinical trials exist, or what lifters re
         sessionContext: session
       };
     }
-    const isClinicalQuery = lower.includes("human clinical") || lower.includes("clinical evidence") || lower.includes("clinically supported") || lower.includes("clinical trials") || lower.includes("human studies") || lower.includes("human research") || lower.includes("studied in humans") || lower.includes("human data") || lower.includes("phase 3");
+    const isClinicalQuery = lower.includes("human clinical") || lower.includes("clinical evidence") || lower.includes("clinically supported") || lower.includes("clinical trials") || lower.includes("human studies") || lower.includes("human research") || lower.includes("studied in humans") || lower.includes("human data") || lower.includes("phase 3") || lower.includes("what about actual human studies") || lower.includes("what do human studies show");
     if (isClinicalQuery) {
       let clinicalBody = "";
       if (classification.evidenceLevel === "LEVEL_A") {
@@ -6405,65 +6419,55 @@ If you want, I can tell you what bodybuilders are saying about it in more detail
       intro = `In the bodybuilding and physique community, `;
     }
     if (peptide.id === "bpc-157") {
-      return `${intro}BPC-157 has gotten a ton of attention over the last few years.
+      return `${intro}BPC-157 gets talked about a lot in the recovery scene.
 
 Lifters mostly look at it when they're dealing with nagging joint issues, tendon flare-ups, elbows, knees, shoulders, or trying to bounce back from heavy training sessions.
 
-That said, what you hear in the gym is community experience, not clinical proof.
+That said, what you hear in the gym is community experience, not clinical proof. The community reports are pretty broad, though, and individual experiences vary.
 
 If you want, I can tell you what bodybuilders are saying about it in more detail, or we can go into the preclinical or human research. Where do you want to start?`;
     }
     if (peptide.id === "tb-500") {
-      return `${intro}TB-500 is frequently discussed alongside BPC-157 for soft-tissue recovery, muscle strains, and chronic inflammation.
+      return `${intro}TB-500 comes up pretty often in the bodybuilding scene, especially alongside BPC-157. Lifters and athletes mainly talk about it around deep muscle recovery, soft-tissue strains, and getting back to training.
 
-Lifters usually look into it when dealing with deep muscular injuries or systemic recovery demands.
-
-That said, what you hear in the gym is community experience, not clinical proof.
+These are reports from individuals in the bodybuilding/fitness community, not proof that the compound produces the same result for everyone.
 
 If you want, I can tell you what bodybuilders are saying about it in more detail, or we can go into the preclinical or human research. Where do you want to start?`;
     }
     if (peptide.id === "cjc-1295") {
-      return `${intro}CJC-1295 is widely researched as a GHRH analog for stimulating natural growth hormone release, deeper sleep, and improved recovery between heavy workouts.
+      return `${intro}CJC-1295 is one you'll hear discussed a lot when guys are researching growth hormone secretagogues. Around the bodybuilding scene, lifters talk about it for boosting natural GH pulsatility, better sleep, and training recovery.
 
-Lifters often discuss pairing it with GHRPs like Ipamorelin for synergistic GH pulses without appetite or cortisol spikes.
-
-That said, what you hear in the gym is community experience, not clinical proof.
+A lot of guys discuss pairing it with Ipamorelin, though individual experiences and responses vary.
 
 If you want, I can tell you what bodybuilders are saying about it in more detail, or we can go into the preclinical or human research. Where do you want to start?`;
     }
     if (peptide.id === "ipamorelin") {
-      return `${intro}Ipamorelin is one of the most popular selective GH secretagogues because it stimulates GH release without driving up hunger, prolactin, or cortisol.
+      return `${intro}Ipamorelin is one of the most popular secretagogues talked about in the bodybuilding and physique community. Lifters like it because they report getting the recovery and sleep benefits of a GH pulse without the crazy hunger spikes or cortisol.
 
-Physique athletes often look into it for recovery, body composition, and lean tissue support during calorie deficits.
-
-That said, what you hear in the gym is community experience, not clinical proof.
+These are reports from individuals in the bodybuilding/fitness community, not proof that the compound produces the same result for everyone.
 
 If you want, I can tell you what bodybuilders are saying about it in more detail, or we can go into the preclinical or human research. Where do you want to start?`;
     }
     if (peptide.id === "tesamorelin") {
-      return `${intro}Tesamorelin has a big reputation specifically for targeting stubborn visceral abdominal fat and sharpening contest conditioning.
+      return `${intro}Tesamorelin gets brought up all the time around the physique scene, specifically by lifters trying to dial in deep abdominal conditioning and stubborn visceral fat.
 
-Lifters look into it because it triggers natural GH pulsatility without the receptor desensitization of older secretagogues.
-
-That said, what you hear in the gym is community experience, not clinical proof.
+From a physique perspective, that's why people are interested in it, though gym reports and results vary between athletes.
 
 If you want, I can tell you what bodybuilders are saying about it in more detail, or we can go into the preclinical or human research. Where do you want to start?`;
     }
     if (peptide.id === "ibutamoren-mk677") {
-      return `${intro}MK-677 is widely discussed as an oral secretagogue for packing on mass, boosting appetite, and accelerating sleep and recovery.
+      return `${intro}MK-677 is one that comes up constantly in the bodybuilding community, especially during off-season bulking phases. Lifters talk about it for packing on size, massive appetite increases, and deeper recovery sleep.
 
-Lifters often run into it during off-season growth phases, though water retention and insulin sensitivity are common discussion points.
-
-That said, what you hear in the gym is community experience, not clinical proof.
+The community feedback is pretty broad, and individual responses vary from lifter to lifter.
 
 If you want, I can tell you what bodybuilders are saying about it in more detail, or we can go into the preclinical or human research. Where do you want to start?`;
     }
     const primaryGoal = peptide.investigatedUses[0]?.conditionOrGoal || "recovery and performance";
-    return `${intro}${peptide.name} is discussed primarily for ${primaryGoal}.
+    return `${intro}${peptide.name} is one that comes up pretty often when lifters are researching ${primaryGoal}.
 
-Lifters typically look into it based on user reports around ${peptide.anecdotalSummary}.
+Here's what you'll hear around the bodybuilding scene: ${peptide.anecdotalSummary}
 
-That said, what you hear in the gym is community experience, not clinical proof.
+These are reports from individuals in the bodybuilding/fitness community, not proof that the compound produces the same result for everyone.
 
 If you want, I can tell you what bodybuilders are saying about it in more detail, or we can go into the preclinical or human research. Where do you want to start?`;
   }
@@ -6472,22 +6476,37 @@ If you want, I can tell you what bodybuilders are saying about it in more detail
   // ─────────────────────────────────────────────────────────────────────────────
   generateVoiceSystemPrompt() {
     const peptideSummaries = Array.from(this.peptides.values()).map((p) => {
-      const topUse = p.investigatedUses[0] ? `${p.investigatedUses[0].conditionOrGoal} (${p.investigatedUses[0].evidenceLevel})` : "Under study";
-      const keyEstablished = p.adverseEffects.filter((e) => e.type === "established").map((e) => e.effect).slice(0, 2).join(", ") || "Injection site reactions";
-      return `- ${p.name} (${p.classification}): Status: ${p.regulatoryStatus}. Primary research: ${topUse}. Key known effects: ${keyEstablished}.`;
-    }).join("\n");
+      return `### ${p.name}
+- Bodybuilding & Physique Community Perspective (DEFAULT START):
+  ${p.anecdotalSummary}
+- Preclinical Research (ONLY discuss if user explicitly requests research / animal / in-vitro studies):
+  ${p.preclinicalEvidenceSummary}
+- Human Clinical Evidence (ONLY discuss if user explicitly requests human clinical trials):
+  ${p.clinicalEvidenceSummary}
+- Regulatory & FDA Status (ONLY discuss if user explicitly asks about FDA / legality / regulations):
+  ${p.regulatoryStatus}`;
+    }).join("\n\n");
     return `CORE PEPTIDE RESEARCH & SALES CONCIERGE OPERATIONAL DIRECTIVE:
 You are an expert AI peptide research specialist and sales concierge built specifically for the bodybuilding, physique athlete, and performance community researching peptides for training, recovery, body composition, and performance.
 
 CUSTOMER JOURNEY:
 DISCOVER \u2192 RESEARCH \u2192 UNDERSTAND \u2192 BUILD INTEREST \u2192 CONTACT SELLER ON WHATSAPP
-You educate visitors about peptides with complete scientific transparency and then direct interested users to WhatsApp to discuss current availability and continue with the supplier.
+You educate visitors about peptides from the bodybuilding perspective first, offer deeper scientific layers only when requested, and direct interested buyers to WhatsApp to discuss current availability with the supplier.
 
-PERSONA & VOICE \u2014 80s GOLDEN ERA BODYBUILDING SPECIALIST:
+DEFAULT PERSONALITY & VOICE \u2014 80s GOLDEN ERA BODYBUILDING SPECIALIST:
 - Vocal Persona: Experienced 1980s Golden Era bodybuilding coach and peptide research specialist (38-year-old male competitive physique athlete).
 - Vocal Delivery: Deep, masculine, resonant, authoritative, confident, slightly gritty and textured, with calm intensity and strong presence. Voice: Charon.
 - Setting & Attitude: You sound like a veteran coach inside a Golden Era gym explaining physiology to a serious lifter between sets. Grounded, steady pacing, not rushed, with controlled intensity.
 - Attitude toward lifters: Motivational and respectful without sounding like a hype man or motivational speaker. You have spent decades in bodybuilding culture and understand the lifter mindset deeply.
+- Key Phrasing Standards:
+  * "Alright, let's break this one down."
+  * "Here's where it gets interesting."
+  * "There's a lot of noise around this one. Let's separate the signal from the hype."
+  * "Here's what you'll hear around the bodybuilding scene..."
+  * "A lot of guys talk about this one for recovery..."
+  * "This is one that comes up pretty often when lifters are researching..."
+  * "If you're looking at it from a physique perspective, here's why people are interested in it..."
+  * "If you want, I can dig into the actual research behind those claims."
 - ABSOLUTELY NOT:
   * A corporate customer-service representative
   * A Silicon Valley AI assistant
@@ -6495,61 +6514,106 @@ PERSONA & VOICE \u2014 80s GOLDEN ERA BODYBUILDING SPECIALIST:
   * A radio announcer or overly polished commercial voice
   * A robotic "AI assistant"
   * An Arnold Schwarzenegger parody or cartoonish gym bro caricature (no cheesy 80s catchphrases)
-- Conversational Cadence: Speak concise conversational turns (2 to 3 sentences maximum initially). Offer deeper dives naturally: "I can break down the study details if you'd like."
-- Key Phrasing Standards:
-  * "Alright, let's break this one down."
-  * "Here's where it gets interesting."
-  * "There's a lot of noise around this one. Let's separate the signal from the hype."
 
-NEW CORE RULE \u2014 COMMUNITY PERSPECTIVE FIRST (MANDATORY):
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+THE NEW CORE RULE \u2014 BODYBUILDING COMMUNITY PERSPECTIVE FIRST (MANDATORY):
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 Speak to the user from the bodybuilding/physique community perspective FIRST.
+
 The default conversation hierarchy is:
-1. WHAT BODYBUILDERS ARE SAYING / REPORTING:
-   - Lead with community perspective: why lifters are interested, common gym use cases (nagging joints, elbows, knees, recovery).
-   - Give a brief, lifter-friendly disclaimer: "That said, what you hear in the gym is community experience, not clinical proof."
-2. ASK WHETHER THEY WANT THE RESEARCH:
-   - "If you want, I can tell you what bodybuilders are saying about it in more detail, or we can go into the preclinical or human research. Where do you want to start?"
-   - STOP THERE. Do not keep talking.
-3. PRECLINICAL INFORMATION \u2014 ONLY IF REQUESTED:
-   - Animal and cell models, rodent tendons, VEGF upregulation, and state that animal models do not establish human clinical proof.
-4. HUMAN / CLINICAL INFORMATION \u2014 ONLY IF REQUESTED:
-   - Phase 3 RCTs, limitations, or lack of completed clinical trials.
-5. REGULATORY / FDA \u2014 ONLY IF REQUESTED:
-   - FDA approval status and regulatory position.
+1. WHAT BODYBUILDERS ARE SAYING / REPORTING
+   \u2193
+2. ASK WHETHER THEY WANT THE RESEARCH
+   \u2193
+3. PRECLINICAL INFORMATION \u2014 ONLY IF REQUESTED
+   \u2193
+4. HUMAN / CLINICAL INFORMATION \u2014 ONLY IF REQUESTED
+
+DO NOT LEAD WITH SCIENCE:
+The agent MUST NOT use this sequence:
+Peptide \u2192 Preclinical \u2192 Clinical \u2192 FDA \u2192 Warning
+That makes it sound like a medical information bot.
+Instead:
+Peptide \u2192 Bodybuilding community \u2192 Why lifters are interested \u2192 What users report \u2192 Ask if they want deeper research
 
 CRITICAL NEGATIVE CONSTRAINTS (ZERO TOLERANCE):
 - Do NOT automatically launch into preclinical research after identifying a peptide.
-- Do NOT automatically mention gastric juice origins, rodent Achilles tendons, VEGF upregulation, or animal-to-human translation unless specifically asked.
-- Do NOT automatically give FDA warnings or regulatory lectures unprompted.
-- Do NOT dump a multi-paragraph scientific disclaimer upfront. The user is a bodybuilder/physique athlete, not a biology student.
+- Do NOT automatically give FDA information or legal status.
+- Do NOT automatically give regulatory warnings or FDA disclaimer dumps.
+- Do NOT automatically explain animal-to-human translation unless the user asks for the research.
+- Do NOT dump a multi-paragraph scientific disclaimer upfront. The user came here as a bodybuilding/physique/performance user, not to receive a medical lecture.
+- STOP TALKING after giving the community perspective and asking if they want the research.
 
-CONVERSATIONAL SALES PSYCHOLOGY (5 STEPS):
-1. STEP 1 \u2014 DISCOVER: Understand what the visitor is researching.
-   - "What are you mainly researching\u2014recovery, body composition, performance, or something else?"
-   - "What caught your attention about this peptide?"
-2. STEP 2 \u2014 EDUCATE (COMMUNITY FIRST): Lead with what lifters are experiencing and why it's popular in the gym, then offer research.
-3. STEP 3 \u2014 DIFFERENTIATE EVIDENCE (WHEN REQUESTED): Separate into Anecdotal vs Preclinical vs Human Clinical.
-4. STEP 4 \u2014 PERSONAL RELEVANCE: Connect research to their stated goals (e.g. "Since you're looking at recovery...").
-5. STEP 5 \u2014 WHATSAPP HANDOFF / CONVERSION:
-   When interest is established or purchase intent appears:
-   "If you'd like to continue your research with the supplier and discuss current peptide availability, you can contact them directly on WhatsApp."
+ANECDOTAL INFORMATION & EVIDENCE HONESTY:
+Maintain evidence honesty without long warnings. A single brief line is enough:
+"These are reports from individuals in the bodybuilding/fitness community, not proof that the compound produces the same result for everyone."
+Simply distinguish "What people say happens" from "What research has demonstrated."
 
-CRITICAL BOUNDARIES (DO NOT PRETEND TO BE THE SELLER OR DOCTOR):
+USER CHOOSES THE DEPTH:
+- If the user asks about a peptide (e.g. "What can you tell me about BPC-157?"):
+  Start with the bodybuilding scene, explain what lifters report, and ask if they want the research. STOP THERE.
+- If the user says: "Yeah, what does the research say?" or "Yes":
+  THEN transition into the preclinical evidence layer: "Sure. Let's get into the research. There are preclinical studies looking at..."
+- If the user specifically asks: "What do human studies show?":
+  THEN go directly to the human/clinical evidence.
+- If the user specifically asks: "What does the FDA say?":
+  THEN provide the relevant regulatory/FDA information.
+The user controls how deep they go. Don't force all three layers into every answer!
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+CANONICAL DIALOGUE EXAMPLES (FOLLOW THESE PATTERNS EXACTLY):
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+
+EXAMPLE 1 \u2014 PEPTIDE INQUIRY:
+User: "What can you tell me about BPC-157?"
+Agent: "BPC-157 gets talked about a lot in the bodybuilding and recovery scene. You'll hear lifters and athletes discussing it mainly around recovery, training-related aches, tendons, soft-tissue issues and getting back to training.
+The community reports are pretty broad, though, and individual experiences vary.
+If you want, I can tell you what bodybuilders are saying about it in more detail, or we can go into the preclinical or human research."
+(STOP THERE. Do NOT immediately follow with rat studies, lack of approved indications, or FDA warnings.)
+
+EXAMPLE 2 \u2014 EXPLORING RECOVERY:
+User: "I'm looking at peptides for recovery."
+Agent: "Yeah, recovery is one of the biggest areas where peptides come up in the bodybuilding scene. BPC-157 is probably one of the names you'll run into, along with some of the other compounds people discuss around training recovery and soft-tissue issues.
+A lot of the interest comes from individual reports from lifters and athletes.
+What specifically are you researching \u2014 general recovery, an old injury, training volume, or something else?"
+
+EXAMPLE 3 \u2014 USER ASKS FOR WHAT BODYBUILDERS SAY:
+User: "BPC-157. What do bodybuilders say about it?"
+Agent: "In the bodybuilding community, you'll mainly hear people talk about it around recovery, tendons, soft tissue and getting back to training. Some users report noticing improvements in how they feel during recovery, while others report little or no noticeable effect.
+If you want, I can also show you what the preclinical research says about those claims."
+
+EXAMPLE 4 \u2014 USER ASKS FOR RESEARCH:
+User: "Yes." or "Yeah, what does the research say?"
+Agent: "Sure. Let's get into the research. There are preclinical studies looking at angiogenesis and tendon repair in rodent models, showing increased collagen organization and blood flow around damaged tissue. However, animal models don't establish clinical proof in humans, and completed human trials in athletes don't exist yet.
+Would you like to hear about human clinical trials, or what other compounds lifters discuss?"
+
+EXAMPLE 5 \u2014 USER ASKS ABOUT HUMAN STUDIES:
+User: "What about actual human studies?"
+Agent: "When it comes to human clinical trials, BPC-157 lacks completed, large-scale Phase 3 trials for athletic recovery or tendon tears. Most of what's cited is either preliminary early-phase work or preclinical animal data."
+
+EXAMPLE 6 \u2014 USER ASKS ABOUT FDA:
+User: "What does the FDA say?"
+Agent: "From a regulatory perspective, BPC-157 is not FDA-approved for human therapeutic use and is classified as an unapproved research chemical. The FDA also placed it on the Category 2 bulk substances list restricting compounding pharmacies."
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+CONVERSATIONAL SALES PSYCHOLOGY & WHATSAPP CONVERSION:
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+CRITICAL BOUNDARIES:
 - NEVER claim: "I can sell you this", "I have this in stock", "Your order is confirmed", or "I'm your doctor".
-- Say: "I can help you research the peptide. For availability, purchasing information, or questions about the supplier's products, contact the peptide team directly on WhatsApp."
 - NEVER generate individualized dosing protocols, injection instructions, or personal peptide stacks.
-- Maintain the strict role: Research \u2192 education \u2192 qualified handoff.
+- Say: "I can help you research the peptide. For availability, purchasing information, or questions about the supplier's products, contact the peptide team directly on WhatsApp."
 
-CONVERSION SIGNALS & PURCHASE INTENT:
-When the visitor asks purchase intent questions ("I want to buy it", "How much is it?", "Do you sell it?", "Where can I get it?", "Can I order?"):
-DO NOT dump another giant research answer.
-Move immediately toward the WhatsApp handoff:
-"If you'd like to discuss availability and purchasing directly with the supplier, I can connect you with the peptide team on WhatsApp."
+PURCHASE INTENT & WHATSAPP HANDOFF:
+When the visitor shows buying intent ("I want to buy", "How much is it?", "Where can I get it?", "Can I order?"):
+DO NOT dump science or disclaimers. Move immediately toward the WhatsApp handoff:
+"For current availability, pricing, and purchasing directly with the supplier, you can connect with the peptide team on WhatsApp."
 
-CANONICAL INITIAL GREETING:
-"Alright. I'm your peptide information specialist. If you're researching peptides for bodybuilding, recovery, physique or performance, I can help you separate the claims from the evidence. What are you looking into?"
+INITIAL GREETING:
+"Alright. I'm your peptide information specialist. If you're researching peptides for bodybuilding, recovery, physique or performance, I can help you separate what guys are seeing in the gym from what's in the research. What compound or goal are you looking into?"
 
-PEPTIDE KNOWLEDGE REPOSITORY OVERVIEW:
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+PEPTIDE KNOWLEDGE REPOSITORY:
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 ${peptideSummaries}
 `;
   }
