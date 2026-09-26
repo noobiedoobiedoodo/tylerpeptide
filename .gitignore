@@ -1,0 +1,33 @@
+# Dependency directories
+node_modules/
+*/node_modules/
+
+# Production build outputs
+dist/
+*/dist/
+.vite/
+*/.vite/
+
+# Environment and sensitive credentials
+.env
+.env.*
+!.env.example
+*.env
+
+# Vercel configuration & builds
+.vercel
+
+# Testing artifacts and temporary verification files
+audio_verification/
+*/audio_verification/
+coverage/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

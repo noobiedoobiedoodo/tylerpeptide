@@ -1,0 +1,16 @@
+{
+  "name": "peptide-specialist-voice-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Peptide Specialist Live Voice Concierge Platform with Gemini Live Duplex Audio",
+  "type": "module",
+  "workspaces": [
+    "jessica-production-live-engine"
+  ],
+  "scripts": {
+    "start": "npm --workspace=jessica-production-live-engine run start",
+    "dev": "npm --workspace=jessica-production-live-engine run dev",
+    "build": "npm --workspace=jessica-production-live-engine run build",
+    "test": "npm --workspace=jessica-production-live-engine run test"
+  }
+}
